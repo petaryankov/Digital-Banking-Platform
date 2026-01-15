@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,11 +32,8 @@ public class Account {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime created_At;
 
-    @PrePersist
-    protected void onCreate() {
-        this.created_At = LocalDateTime.now();
-    }
 }

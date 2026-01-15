@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -42,11 +43,8 @@ public class Transaction {
     @JoinColumn(name = "target_account_id")
     private Account targetAccount;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime created_At;
 
-    @PrePersist
-    protected void onCreate() {
-        this.created_At = LocalDateTime.now();
-    }
 }

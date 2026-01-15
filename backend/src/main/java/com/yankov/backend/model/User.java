@@ -3,6 +3,7 @@ package com.yankov.backend.model;
 import com.yankov.backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -31,11 +32,8 @@ public class User {
     @Column(nullable = false, length = 50)
     Role role;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime created_At;
 
-    @PrePersist
-    protected void onCreate() {
-        this.created_At = LocalDateTime.now();
-    }
 }
