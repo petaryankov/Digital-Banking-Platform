@@ -1,4 +1,4 @@
-package com.yankov.backend.model;
+package com.yankov.backend.enums;
 
 public enum Role {
 

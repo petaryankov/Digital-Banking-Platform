@@ -1,5 +1,6 @@
 package com.yankov.backend.model;
 
+import com.yankov.backend.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
