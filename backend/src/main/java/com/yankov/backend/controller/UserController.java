@@ -23,15 +23,17 @@ public class UserController {
 
         User user = userService.getUserById(id);
 
-        UserResponseDto response = UserResponseDto.builder()
-                .id(user.getId())
-                .fullName(user.getFullName())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .createdAt(user.getCreated_At())
-                .build();
+        return ResponseEntity.ok(toResponse(user));
 
-        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/by-email")
+    public ResponseEntity<UserResponseDto> getUserByEmail(
+            @RequestParam String email) {
+
+        User user = userService.getUserByEmail(email);
+
+        return ResponseEntity.ok(toResponse(user));
 
     }
 
@@ -50,16 +52,20 @@ public class UserController {
 
         User savedUser = userService.createUser(user);
 
-        UserResponseDto response = UserResponseDto.builder()
-                .id(savedUser.getId())
-                .fullName(savedUser.getFullName())
-                .email(savedUser.getEmail())
-                .role(savedUser.getRole())
-                .createdAt(savedUser.getCreated_At())
-                .build();
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(response);
+                .body(toResponse(savedUser));
+    }
+
+    // private mapper
+    private UserResponseDto toResponse(User user) {
+
+        return UserResponseDto.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .createdAt(user.getCreated_At())
+                .build();
     }
 }
