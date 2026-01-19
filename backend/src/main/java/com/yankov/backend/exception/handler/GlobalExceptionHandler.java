@@ -67,6 +67,13 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(CurrencyMismatchException.class)
+    public ResponseEntity<Map<String, Object>> handleCurrencyMismatch(
+            CurrencyMismatchException ex
+    ) {
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     // Fallback
 
     public ResponseEntity<Map<String, Object>> handleRuntimeException(
