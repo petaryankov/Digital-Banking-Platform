@@ -1,15 +1,17 @@
 package com.yankov.backend.security;
 
-import com.yankov.backend.constants.SecurityConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+
+import static com.yankov.backend.constants.SecurityConstants.JWT_ISSUER;
 
 @Service
 public class JwtService {
@@ -18,14 +20,12 @@ public class JwtService {
     private final long expiration;
 
     public JwtService(
-            @Value("${jwt.secret}")String secret,
+            @Value("${jwt.secret}")String base64Secret,
             @Value("${jwt.expiration}") long expiration) {
 
-        if (secret.isBlank() || secret.length() < 32) {
-            throw new IllegalArgumentException("JWT secret must be at least 32 characters long");
-        }
-
-        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes());
+        this.signingKey = Keys.hmacShaKeyFor(
+                Decoders.BASE64.decode(base64Secret)
+        );
         this.expiration = expiration;
     }
 
@@ -33,30 +33,29 @@ public class JwtService {
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
-                .setIssuer(SecurityConstants.JWT_ISSUER)
+                .setIssuer(JWT_ISSUER)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(
                         System.currentTimeMillis() + expiration))
-                .signWith(signingKey)
+                .signWith(signingKey,  SignatureAlgorithm.HS256)
                 .compact();
     }
 
     // Extract username(email)
     public String extractUsername(String token) {
-        return getClaims(token).getSubject();
+        return parseClaims(token).getSubject();
     }
 
     // Validate token
     public boolean isTokenValid(String token) {
-        try {
-            getClaims(token);
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
+
+        Claims claims = parseClaims(token);
+
+        return JWT_ISSUER.equals(claims.getIssuer())
+                && !claims.getExpiration().before(new Date());
     }
 
-    private Claims getClaims(String token) {
+    private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(signingKey)
                 .build()
