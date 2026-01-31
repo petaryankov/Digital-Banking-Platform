@@ -5,8 +5,6 @@ public class SecurityConstants {
 
     // Roles
     public static final String ROLE_PREFIX = "ROLE_";
-    public static final String ROLE_USER = "ROLE_USER";
-    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     // Authorization expression
     public static final String USER_OR_ADMIN =
@@ -25,6 +23,4 @@ public class SecurityConstants {
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String AUTHENTICATION_HEADER = "Authorization";
 
-    // JWT
-    public static final String JWT_ISSUER = "digital-banking-platform";
 }

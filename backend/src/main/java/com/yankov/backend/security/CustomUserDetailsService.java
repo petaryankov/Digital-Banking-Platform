@@ -1,11 +1,8 @@
 package com.yankov.backend.security;
 
-import com.yankov.backend.constants.SecurityConstants;
 import com.yankov.backend.model.User;
 import com.yankov.backend.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

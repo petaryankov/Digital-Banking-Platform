@@ -1,5 +1,7 @@
 package com.yankov.backend.security;
 
+import io.jsonwebtoken.Claims;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.yankov.backend.constants.JwtConstants.ACCESS_TOKEN_TYPE;
 import static com.yankov.backend.constants.SecurityConstants.*;
 
 // Executed once per request to authenticate users by token
@@ -25,8 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+                                    @Nonnull HttpServletResponse response,
+                                    @Nonnull FilterChain filterChain)
             throws ServletException, IOException {
 
         // Read Authorization header ("Bearer eyJhbGciOiJIUzI1NiIs...")
@@ -41,7 +44,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Extract raw JWT token by removing "Bearer " prefix
         String token = authHeader.substring(TOKEN_PREFIX.length());
-        String email = jwtService.extractUsername(token);
+
+        Claims claims = jwtService
+                .validateAndParse(token, ACCESS_TOKEN_TYPE);
+
+        String email = claims.getSubject();
 
         // Process if token contains username and no authentication is already present in SecurityContext
         if (email != null &&
@@ -50,9 +57,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Load user details from database
             UserDetails userDetails =
                     userDetailsService.loadUserByUsername(email);
-
-            // Validate token integrity and expiration
-            if (jwtService.isTokenValid(token)) {
 
                 // Create authenticated token with user authorities
                 UsernamePasswordAuthenticationToken authToken =
@@ -64,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // Store authentication in SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+
         }
 
         // Continue filter chain
@@ -76,6 +80,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getServletPath().startsWith(AUTH_ENDPOINT);
     }
-
 
 }

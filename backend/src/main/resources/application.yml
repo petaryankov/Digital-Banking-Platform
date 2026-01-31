@@ -17,7 +17,8 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}           # Base64-safe secret key
-  expiration: 3600000             # Token validity (1 hour in ms)
+  expiration: 3600000             # Access token: 1 hour in ms
+  refresh-expiration: 604800000   # Refresh token: 7 days
 
 server:
   port: 8080
