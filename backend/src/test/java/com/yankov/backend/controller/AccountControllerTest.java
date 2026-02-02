@@ -77,7 +77,7 @@ class AccountControllerTest {
                 .balance(BigDecimal.ZERO)
                 .currency(Currency.EUR)
                 .user(user)
-                .created_At(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         when(accountService.createAccount(USER_ID, Currency.EUR))
@@ -110,7 +110,7 @@ class AccountControllerTest {
                 .balance(BALANCE_100)
                 .currency(Currency.EUR)
                 .user(user)
-                .created_At(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         when(accountService.getAccountByAccountNumber(ACCOUNT_NUMBER))
@@ -142,7 +142,7 @@ class AccountControllerTest {
                 .balance(BALANCE_100)
                 .currency(Currency.EUR)
                 .user(user)
-                .created_At(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         when(accountService.getAccountsByUserId(USER_ID))

@@ -75,7 +75,7 @@ public class UserController {
                 .fullName(user.getFullName())
                 .email(user.getEmail())
                 .role(user.getRole())
-                .createdAt(user.getCreated_At())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 }

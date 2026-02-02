@@ -67,6 +67,7 @@ public class UserServiceImplTest {
 
         assertThat(result).isEqualTo(user);
         verify(userRepository).findByEmail(USER_EMAIL);
+        verify(passwordEncoder).encode(anyString());
         verify(userRepository).save(user);
     }
 

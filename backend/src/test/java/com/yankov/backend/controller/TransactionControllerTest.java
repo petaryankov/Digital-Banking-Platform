@@ -102,7 +102,7 @@ class TransactionControllerTest {
                 .type(TransactionType.DEPOSIT)
                 .status(TransactionStatus.COMPLETED)
                 .targetAccount(targetAccount)
-                .created_At(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         when(accountService.getAccountByAccountNumber(TARGET_ACCOUNT_NUMBER))
@@ -137,7 +137,7 @@ class TransactionControllerTest {
                 .type(TransactionType.WITHDRAW)
                 .status(TransactionStatus.COMPLETED)
                 .sourceAccount(sourceAccount)
-                .created_At(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         when(accountService.getAccountByAccountNumber(SOURCE_ACCOUNT_NUMBER))
@@ -174,7 +174,7 @@ class TransactionControllerTest {
                 .status(TransactionStatus.COMPLETED)
                 .sourceAccount(sourceAccount)
                 .targetAccount(targetAccount)
-                .created_At(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         when(accountService.getAccountByAccountNumber(SOURCE_ACCOUNT_NUMBER))
@@ -208,7 +208,7 @@ class TransactionControllerTest {
                 .type(TransactionType.DEPOSIT)
                 .status(TransactionStatus.COMPLETED)
                 .targetAccount(targetAccount)
-                .created_At(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         when(accountService.getAccountByAccountNumber(TARGET_ACCOUNT_NUMBER))

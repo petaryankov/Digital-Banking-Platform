@@ -1,18 +1,13 @@
 package com.yankov.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.yankov.backend.constants.ExceptionMessages;
 import com.yankov.backend.exception.*;
-
 import com.yankov.backend.security.CustomUserDetailsService;
 import com.yankov.backend.security.JwtService;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,9 +26,6 @@ class GlobalExceptionHandlerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     // Mock the controller to trigger exceptions
     @MockitoBean

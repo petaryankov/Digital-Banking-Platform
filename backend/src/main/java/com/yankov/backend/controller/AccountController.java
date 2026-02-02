@@ -65,7 +65,7 @@ public class AccountController {
                 .balance(account.getBalance())
                 .currency(account.getCurrency())
                 .userId(account.getUser().getId())
-                .createdAt(account.getCreated_At())
+                .createdAt(account.getCreatedAt())
                 .build();
     }
 

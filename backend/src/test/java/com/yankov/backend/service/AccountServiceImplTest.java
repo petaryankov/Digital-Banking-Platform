@@ -58,6 +58,7 @@ public class AccountServiceImplTest {
     @BeforeEach
     void setUp() {
 
+        // Initialize user and account
         user = User.builder()
                 .id(USER_ID)
                 .fullName(USER_FULL_NAME)

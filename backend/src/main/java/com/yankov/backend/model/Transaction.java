@@ -45,6 +45,6 @@ public class Transaction {
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime created_At;
+    private LocalDateTime createdAt;
 
 }

@@ -64,7 +64,7 @@ class UserControllerTest {
                 .fullName(FULL_NAME)
                 .email(EMAIL)
                 .role(Role.USER)
-                .created_At(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         when(userService.getUserById(USER_ID)).thenReturn(user);
@@ -88,7 +88,7 @@ class UserControllerTest {
                 .fullName(FULL_NAME)
                 .email(EMAIL)
                 .role(Role.USER)
-                .created_At(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         when(userService.getUserByEmail(EMAIL)).thenReturn(user);
@@ -118,7 +118,7 @@ class UserControllerTest {
                 .fullName(FULL_NAME)
                 .email(EMAIL)
                 .role(Role.USER)
-                .created_At(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         when(userService.createUser(any(User.class))).thenReturn(savedUser);

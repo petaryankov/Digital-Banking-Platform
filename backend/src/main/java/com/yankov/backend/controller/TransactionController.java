@@ -108,7 +108,7 @@ public class TransactionController {
                         transaction.getSourceAccount().getAccountNumber() : null)
                 .targetAccountNumber(transaction.getTargetAccount() != null ?
                         transaction.getTargetAccount().getAccountNumber() : null)
-                .createdAt(transaction.getCreated_At())
+                .createdAt(transaction.getCreatedAt())
                 .build();
     }
 }

@@ -52,6 +52,7 @@ public class TransactionServiceImplTest {
     @BeforeEach
     public void setUp() {
 
+        // Initialize source and target accounts
         sourceAccount = Account.builder()
                 .id(ACCOUNT_ID)
                 .accountNumber(SOURCE_ACCOUNT_NUMBER)
