@@ -37,8 +37,9 @@ public class JwtSecurityIntegrationTest {
     private final String ADMIN_DASHBOARD_URI = "/api/admin/dashboard";
 
     @BeforeEach
-    void setupUsers() {
+    void setupTokens() {
 
+        // Generate fresh JWT tokens for test users loaded via SQL
         userToken = jwtService.generateAccessToken("user@test.com");
         adminToken = jwtService.generateAccessToken("admin@test.com");
     }
@@ -53,9 +54,8 @@ public class JwtSecurityIntegrationTest {
     // Access protected endpoint with invalid token → 401 Unauthorized
     @Test
     void whenInvalidToken_thenUnauthorized() throws Exception {
-        String INVALID_TOKEN = "Bearer invalid.token.here";
         mockMvc.perform(get(ADMIN_DASHBOARD_URI)
-                        .header(HttpHeaders.AUTHORIZATION, INVALID_TOKEN))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer invalid.token.here"))
                 .andExpect(status().isUnauthorized());
     }
 
