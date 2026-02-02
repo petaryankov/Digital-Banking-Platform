@@ -1,5 +1,6 @@
 package com.yankov.backend.security;
 
+import com.yankov.backend.exception.InvalidJwtTokenException;
 import io.jsonwebtoken.Claims;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -45,6 +46,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Extract raw JWT token by removing "Bearer " prefix
         String token = authHeader.substring(TOKEN_PREFIX.length());
 
+        try {
+
         Claims claims = jwtService
                 .validateAndParse(token, ACCESS_TOKEN_TYPE);
 
@@ -70,7 +73,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 
         }
-
+        } catch (InvalidJwtTokenException ex) {
+            // AuthenticationEntryPoint handle it
+            SecurityContextHolder.clearContext();
+        }
         // Continue filter chain
         filterChain.doFilter(request, response);
     }

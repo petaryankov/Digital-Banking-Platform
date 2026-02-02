@@ -38,10 +38,14 @@ public class AccountServiceImplTest {
 
     private static final Long USER_ID = 1L;
     private static final Long ACCOUNT_ID = 10L;
+
     private static final String ACCOUNT_NUMBER = "ACC123456";
     private static final String ACCOUNT_NUMBER_START_WITH_ACC = "ACC";
+
     private static final String USER_FULL_NAME = "John Doe";
     private static final String USER_EMAIL = "john@test.com";
+    private static final String USER_PASSWORD = "password";
+
     private static final BigDecimal AMOUNT_ZERO= BigDecimal.ZERO;
     private static final BigDecimal AMOUNT_50 = new BigDecimal("50.00");
     private static final BigDecimal AMOUNT_100 = new BigDecimal("100.00");
@@ -53,10 +57,12 @@ public class AccountServiceImplTest {
 
     @BeforeEach
     void setUp() {
+
         user = User.builder()
                 .id(USER_ID)
                 .fullName(USER_FULL_NAME)
                 .email(USER_EMAIL)
+                .password(USER_PASSWORD)
                 .build();
 
         account = Account.builder()

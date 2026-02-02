@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -28,19 +29,24 @@ public class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     private User user;
 
     private static final Long USER_ID = 1L;
-    private static final String EMAIL = "test@example.com";
-    private static final String FULL_NAME = "Test User";
+    private static final String USER_EMAIL = "test@example.com";
+    private static final String USER_PASSWORD = "password";
+    private static final String USER_FULL_NAME = "Test User";
 
     @BeforeEach
     void setUp() {
 
         user = User.builder()
                 .id(USER_ID)
-                .email(EMAIL)
-                .fullName(FULL_NAME)
+                .email(USER_EMAIL)
+                .fullName(USER_FULL_NAME)
+                .password(USER_PASSWORD)
                 .build();
     }
 
@@ -48,8 +54,11 @@ public class UserServiceImplTest {
     @Test
     void createUser_shouldSaveUser_whenEmailDoesNotExist() {
 
-        when(userRepository.findByEmail(EMAIL))
+        when(userRepository.findByEmail(USER_EMAIL))
                 .thenReturn(Optional.empty());
+
+        when(passwordEncoder.encode(anyString()))
+                .thenReturn(USER_PASSWORD);
 
         when(userRepository.save(user))
                 .thenReturn(user);
@@ -57,7 +66,7 @@ public class UserServiceImplTest {
         User result = userService.createUser(user);
 
         assertThat(result).isEqualTo(user);
-        verify(userRepository).findByEmail(EMAIL);
+        verify(userRepository).findByEmail(USER_EMAIL);
         verify(userRepository).save(user);
     }
 
@@ -65,13 +74,13 @@ public class UserServiceImplTest {
     @Test
     void createUser_shouldThrowException_whenEmailAlreadyExists() {
 
-        when(userRepository.findByEmail(EMAIL))
+        when(userRepository.findByEmail(USER_EMAIL))
                 .thenReturn(Optional.of(user));
 
         assertThatThrownBy(() -> userService.createUser(user))
                 .isInstanceOf(UserAlreadyExistsException.class);
 
-        verify(userRepository).findByEmail(EMAIL);
+        verify(userRepository).findByEmail(USER_EMAIL);
         verify(userRepository, never()).save(any());
     }
 
@@ -79,26 +88,26 @@ public class UserServiceImplTest {
     @Test
     void getUserByEmail_shouldReturnUser_whenFound() {
 
-        when(userRepository.findByEmail(EMAIL))
+        when(userRepository.findByEmail(USER_EMAIL))
                 .thenReturn(Optional.of(user));
 
-        User result = userService.getUserByEmail(EMAIL);
+        User result = userService.getUserByEmail(USER_EMAIL);
 
         assertThat(result).isEqualTo(user);
-        verify(userRepository).findByEmail(EMAIL);
+        verify(userRepository).findByEmail(USER_EMAIL);
     }
 
     // Throws an exception when trying to retrieve a user by a non-existing email
     @Test
     void getUserByEmail_shouldThrowException_whenNotFound() {
 
-        when(userRepository.findByEmail(EMAIL))
+        when(userRepository.findByEmail(USER_EMAIL))
                 .thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> userService.getUserByEmail(EMAIL))
+        assertThatThrownBy(() -> userService.getUserByEmail(USER_EMAIL))
                 .isInstanceOf(UserNotFoundException.class);
 
-        verify(userRepository).findByEmail(EMAIL);
+        verify(userRepository).findByEmail(USER_EMAIL);
     }
 
     // Retrieves a user by ID when it exists

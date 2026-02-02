@@ -6,6 +6,8 @@ import com.yankov.backend.enums.Currency;
 import com.yankov.backend.model.Account;
 import com.yankov.backend.model.User;
 import com.yankov.backend.model.dto.request.AccountCreateRequestDto;
+import com.yankov.backend.security.CustomUserDetailsService;
+import com.yankov.backend.security.JwtService;
 import com.yankov.backend.service.AccountService;
 
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,12 @@ class AccountControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private CustomUserDetailsService customUserDetailsService;
 
     // Test constants
     private static final Long USER_ID = 1L;

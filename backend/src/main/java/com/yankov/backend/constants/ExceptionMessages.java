@@ -34,6 +34,10 @@ public class ExceptionMessages {
     public static final String MALFORMED_TOKEN =
             "Malformed or unsupported JWT token";
     public static final String ACCESS_DENIED = "Access Denied";
+    public static final String UNAUTHORIZED =
+            "Authentication is required to access this resource";
+    public static final String INVALID_CREDENTIALS =
+            "Invalid email or password";
     public static final String UNEXPECTED_SERVER_ERROR = "Unexpected server error";
 
 }

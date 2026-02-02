@@ -8,6 +8,8 @@ import com.yankov.backend.model.Account;
 import com.yankov.backend.model.Transaction;
 import com.yankov.backend.model.dto.request.TransactionRequestDto;
 import com.yankov.backend.model.dto.request.TransferRequestDto;
+import com.yankov.backend.security.CustomUserDetailsService;
+import com.yankov.backend.security.JwtService;
 import com.yankov.backend.service.AccountService;
 import com.yankov.backend.service.TransactionService;
 
@@ -47,6 +49,12 @@ class TransactionControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private CustomUserDetailsService customUserDetailsService;
 
     // Test constants
     private static final Long ACCOUNT_ID = 1L;

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yankov.backend.constants.ExceptionMessages;
 import com.yankov.backend.exception.*;
 
+import com.yankov.backend.security.CustomUserDetailsService;
+import com.yankov.backend.security.JwtService;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,12 @@ class GlobalExceptionHandlerControllerTest {
     @MockitoBean
     private ExceptionTestController exceptionTestController;
 
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private CustomUserDetailsService customUserDetailsService;
+
     // Test constants
     private static final Long ACCOUNT_ID = 1L;
     private static final BigDecimal AMOUNT_ZERO = BigDecimal.ZERO;
@@ -59,7 +67,7 @@ class GlobalExceptionHandlerControllerTest {
             String.format(ExceptionMessages.INSUFFICIENT_BALANCE, ACCOUNT_ID, AMOUNT_100);
 
     private static final String INVALID_TRANSACTION_MESSAGE =
-            ExceptionMessages.INVALID_TRANSACTION_AMOUNT;
+            String.format(ExceptionMessages.INVALID_TRANSACTION_AMOUNT, AMOUNT_ZERO);
 
     private static final String CURRENCY_MISMATCH_MESSAGE =
             String.format(ExceptionMessages.CURRENCY_MISMATCH, SOURCE_CURRENCY, TARGET_CURRENCY);

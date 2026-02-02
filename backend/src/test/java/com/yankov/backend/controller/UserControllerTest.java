@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.yankov.backend.enums.Role;
 import com.yankov.backend.model.User;
+import com.yankov.backend.security.CustomUserDetailsService;
+import com.yankov.backend.security.JwtService;
 import com.yankov.backend.service.UserService;
 import com.yankov.backend.model.dto.request.UserCreateRequestDto;
 
@@ -38,6 +40,12 @@ class UserControllerTest {
     // Mock service layer to isolate controller behavior
     @MockitoBean
     private UserService userService;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private CustomUserDetailsService customUserDetailsService;
 
     // Test constants
     private static final Long USER_ID = 1L;

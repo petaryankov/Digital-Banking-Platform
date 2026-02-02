@@ -106,9 +106,8 @@ public class JwtService {
                 .setSubject(email)
                 .setIssuer(JWT_ISSUER)
                 .claim(TOKEN_TYPE_CLAIM, tokenType)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System
-                        .currentTimeMillis() + expiration))
+                .setIssuedAt(Date.from(Instant.now()))
+                .setExpiration(Date.from(Instant.now().plusMillis(expiration)))
                 .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }

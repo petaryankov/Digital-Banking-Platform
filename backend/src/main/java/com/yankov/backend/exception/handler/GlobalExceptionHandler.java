@@ -4,6 +4,8 @@ import com.yankov.backend.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -11,8 +13,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.yankov.backend.constants.ExceptionMessages.ACCESS_DENIED;
-import static com.yankov.backend.constants.ExceptionMessages.UNEXPECTED_SERVER_ERROR;
+import static com.yankov.backend.constants.ExceptionMessages.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -80,6 +81,25 @@ public class GlobalExceptionHandler {
 
     // JWT / Security
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleBadCredentials(
+            BadCredentialsException ex
+    ) {
+        return buildResponseEntity(
+                HttpStatus.UNAUTHORIZED,
+                INVALID_CREDENTIALS);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Map<String, Object>> handleAuthentication(
+            AuthenticationException ex
+    ) {
+        return buildResponseEntity(
+                HttpStatus.UNAUTHORIZED,
+                UNAUTHORIZED
+        );
+    }
+
     @ExceptionHandler(InvalidJwtTokenException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidJwtToken(
             InvalidJwtTokenException ex
@@ -87,18 +107,19 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
+
     @ExceptionHandler(InvalidRefreshTokenException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidRefreshToken(
             InvalidRefreshTokenException ex
     ) {
-        return buildResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        return buildResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     @ExceptionHandler(RefreshTokenNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleRefreshTokenNotFound(
             RefreshTokenNotFoundException ex
     )  {
-        return buildResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        return buildResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -108,8 +129,7 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.FORBIDDEN, ACCESS_DENIED);
     }
 
-    // Fallback
-
+    // Fallback for all other RuntimeExceptions
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntimeException(
             RuntimeException ex
