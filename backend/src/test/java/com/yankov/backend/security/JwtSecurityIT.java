@@ -1,10 +1,8 @@
 package com.yankov.backend.security;
 
-import com.yankov.backend.BackendApplication;
 import com.yankov.backend.constants.SecurityConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,13 +14,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest(classes = BackendApplication.class)
-@Sql(scripts = "/sql/security-test-users.sql",
-        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class JwtSecurityIntegrationTest {
+@Sql(scripts = {
+        "/sql/security-test-clean.sql",
+        "/sql/security-test-users.sql"
+}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+public class JwtSecurityIT {
 
     @Autowired
     private MockMvc mockMvc;
