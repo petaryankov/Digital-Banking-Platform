@@ -1,8 +1,10 @@
 package com.yankov.backend.model.dto.request;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.Builder;
 
-@Getter
+@Data
+@Builder
 public class RefreshTokenRequestDto {
 
     private String refreshToken;

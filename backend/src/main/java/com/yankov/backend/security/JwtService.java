@@ -82,7 +82,7 @@ public class JwtService {
 
             // Validate token type
             if (!expectedType.equals(tokenType)) {
-                throw new InvalidJwtTokenException(INVALID_TOKEN_TYPE);
+                throw new InvalidJwtTokenException(INVALID_TOKEN);
             }
 
             // Validate token expiration

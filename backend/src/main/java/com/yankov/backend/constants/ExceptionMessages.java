@@ -27,7 +27,7 @@ public class ExceptionMessages {
     public static final String REFRESH_TOKEN_INVALID = "Refresh token is invalid or expired";
     public static final String INVALID_ISSUER =
             "Invalid JWT issuer";
-    public static final String INVALID_TOKEN_TYPE =
+    public static final String INVALID_TOKEN =
             "Invalid JWT token type";
     public static final String TOKEN_EXPIRED =
             "JWT token has expired";

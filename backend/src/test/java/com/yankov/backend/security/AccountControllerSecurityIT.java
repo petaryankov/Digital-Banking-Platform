@@ -1,64 +1,38 @@
 package com.yankov.backend.security;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.web.servlet.MockMvc;
 
+import static com.yankov.backend.constants.SecurityConstants.AUTHENTICATION_HEADER;
+import static com.yankov.backend.constants.SecurityConstants.TOKEN_PREFIX;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Sql(scripts = {
-        "/sql/security-test-clean.sql",
-        "/sql/security-test-users.sql",
-        "/sql/security-test-accounts.sql"
-}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class AccountControllerSecurityIT {
 
-    @Autowired
-    private MockMvc mockMvc;
+public class AccountControllerSecurityIT extends BaseSecurityIT {
 
-    @Autowired
-    private JwtService jwtService;
-
-    private String userToken;
-    private String adminToken;
-
-    @BeforeEach
-    public void setUp() {
-        userToken = jwtService.generateAccessToken("user@test.com");
-        adminToken = jwtService.generateAccessToken("admin@test.com");
-
-    }
+    private final String URI = "/api/accounts/user/1";
 
     @Test
-    void shouldReturn401_whenNoTokenProvided() throws Exception {
+    void shouldReturn401_whenNoAccessTokenProvided() throws Exception {
 
-        mockMvc.perform(get("/api/accounts/user/1"))
+        mockMvc.perform(get(URI))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldReturn401_whenTokenIsInvalid() throws Exception {
+    void shouldReturn401_whenAccessTokenIsInvalid() throws Exception {
 
-        mockMvc.perform(get("/api/accounts/user/1")
-                        .header("Authorization", "Bearer invalid.token.value"))
+        mockMvc.perform(get(URI)
+                        .header(AUTHENTICATION_HEADER, TOKEN_PREFIX + "invalid.token.value"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void shouldReturnAccounts_whenUserIsAuthenticated() throws Exception {
 
-        mockMvc.perform(get("/api/accounts/user/1")
-                        .header("Authorization", "Bearer " + userToken))
+        mockMvc.perform(get(URI)
+                        .header(AUTHENTICATION_HEADER, TOKEN_PREFIX + userAccessToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
                 .andExpect(jsonPath("$[0].accountNumber").value("ACC123456"))
@@ -66,11 +40,31 @@ public class AccountControllerSecurityIT {
     }
 
     @Test
-    void shouldAllowAdminAccess_whenAdminTokenProvided() throws Exception {
+    void shouldAllowAdminAccess_whenAdminAccessTokenProvided() throws Exception {
 
-        mockMvc.perform(get("/api/accounts/user/1")
-                        .header("Authorization", "Bearer " + adminToken))
+        mockMvc.perform(get(URI)
+                        .header(AUTHENTICATION_HEADER, TOKEN_PREFIX + adminAccessToken))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldReturn401_whenRefreshTokenUsedInsteadOfAccessToken_user() throws Exception {
+        mockMvc.perform(get(URI)
+                        .header(
+                                AUTHENTICATION_HEADER,
+                                TOKEN_PREFIX + userRefreshToken
+                        ))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturn401_whenRefreshTokenUsedInsteadOfAccessToken_admin() throws Exception {
+        mockMvc.perform(get(URI)
+                        .header(
+                                AUTHENTICATION_HEADER,
+                                TOKEN_PREFIX + adminRefreshToken
+                        ))
+                .andExpect(status().isUnauthorized());
     }
 
 }
