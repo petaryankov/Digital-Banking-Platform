@@ -45,6 +45,21 @@ public class AuthRefreshTokenSecurityIT extends BaseSecurityIT {
         refreshAsAdmin().andExpect(status().isOk());
     }
 
+    // Revoked token -> must be rejected -> 403
+    @Test
+    void shouldReturn403_whenTokenRevoked() throws Exception {
+
+        // revoke in DB
+        refreshTokenRepository.findByToken(userRefreshToken)
+                .ifPresent(token -> {
+                    token.setRevoked(true);
+                    refreshTokenRepository.save(token);
+                });
+
+        refreshAsUser()
+                .andExpect(status().isForbidden());
+    }
+
     // performs refresh call with given Authorization header and body
     private ResultActions refresh(String bearerToken, String body) throws Exception {
         MockHttpServletRequestBuilder request = post(REFRESH_URI)
