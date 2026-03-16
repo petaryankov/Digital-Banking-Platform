@@ -13,29 +13,8 @@ export default function Dashboard() {
     }
   }, [navigate]);
 
-  const handleLogout = () => {
-    // clear tokens on logout
-    tokenService.clearTokens();
-    // redirect to home page after logout
-    navigate("/", { replace: true });
-  };
-
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-
-      {/* Header */}
-      <header className="flex justify-between items-center px-8 py-6 border-b border-gray-800">
-        <h1 className="text-xl font-bold">
-          Dashboard
-        </h1>
-
-        <button
-          onClick={handleLogout}
-          className="text-sm font-semibold text-red-400 hover:text-red-300"
-        >
-          Logout
-        </button>
-      </header>
 
       {/* Content */}
       <main className="p-8">
