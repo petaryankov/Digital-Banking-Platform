@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    // Load user by email
+    // Load user by email during authentication
     @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
@@ -30,11 +30,14 @@ public class CustomUserDetailsService implements UserDetailsService {
                         String.format(USER_NOT_FOUND_BY_EMAIL, email)
                 ));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority(
-                        ROLE_PREFIX + user.getRole()))
-        );
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .authorities(List.of(new SimpleGrantedAuthority(ROLE_PREFIX + user.getRole())))
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .disabled(!user.isActive())
+                .build();
     }
 }

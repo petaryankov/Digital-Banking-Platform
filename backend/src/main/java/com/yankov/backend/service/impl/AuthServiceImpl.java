@@ -59,6 +59,7 @@ public class AuthServiceImpl implements AuthService {
                 .email(request.getEmail())
                 .password(request.getPassword())
                 .role(Role.USER)
+                .active(true)
                 .build();
 
         User saved = userService.createUser(user);
