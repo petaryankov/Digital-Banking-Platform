@@ -3,12 +3,14 @@ package com.yankov.backend.controller;
 import com.yankov.backend.model.User;
 import com.yankov.backend.model.dto.request.UserCreateRequestDto;
 import com.yankov.backend.model.dto.response.UserResponseDto;
+import com.yankov.backend.security.RefreshTokenService;
 import com.yankov.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import static com.yankov.backend.constants.SecurityConstants.USER_OR_ADMIN;
@@ -20,6 +22,7 @@ import static com.yankov.backend.constants.SecurityConstants.USER_PROFILE_DATA;
 public class UserController {
 
     private final UserService userService;
+    private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getUserById(
@@ -59,6 +62,24 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(toResponse(savedUser));
+    }
+
+    // deactivate currently authenticated user
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deactivateAccount(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userService.getUserByEmail(email);
+
+        // remove refresh tokens
+        refreshTokenService.deleteByUser(user);
+
+        // deactivate account
+        userService.deactivateUser(email);
+
+        return ResponseEntity.noContent().build();
+
     }
 
     @PreAuthorize(USER_OR_ADMIN)
