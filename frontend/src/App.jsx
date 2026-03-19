@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router';
 import { useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
 import Dashboard from './components/dashboard/Dashboard';
 import Login from './components/users/login/Login';
@@ -9,9 +10,8 @@ import Home from './components/home/Home';
 import Header from './components/header/Header';
 import { AuthContext } from './contexts/AuthContext';
 import AuthGuard from './components/guards/AuthGuard';
-import './App.css';
 import { tokenService } from './services/tokenService';
-import { jwtDecode } from 'jwt-decode';
+import './App.css';
 
 function App() {
 
@@ -34,7 +34,7 @@ function App() {
         email: decodedToken.sub,
         accessToken
       };
-      
+
     } catch (err) {
 
       // if token is invalid/expired, remove it from storage
