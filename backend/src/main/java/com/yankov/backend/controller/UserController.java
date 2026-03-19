@@ -73,7 +73,7 @@ public class UserController {
         User user = userService.getUserByEmail(email);
 
         // remove refresh tokens
-        refreshTokenService.deleteByUser(user);
+        refreshTokenService.deleteByUserId(user.getId());
 
         // deactivate account
         userService.deactivateUser(email);
