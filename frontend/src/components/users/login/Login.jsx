@@ -1,12 +1,11 @@
 import { Link, useNavigate } from "react-router";
 import { useActionState, useContext, useState } from "react";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 import { tokenService } from "../../../services/tokenService";
 import { AuthContext } from "../../../contexts/AuthContext";
 import ErrorMessage from "../../error-message/ErrorMessage";
 import authApi from "../../../api/authApi";
-
 
 export default function Login() {
 
@@ -26,40 +25,42 @@ export default function Login() {
 
   // submit login
   const loginHandler = async (_, formData) => {
-    
+
     const { email, password } = Object.fromEntries(formData);
 
     try {
-      
+
       // call login api
       const res = await authApi.login(email, password);
 
+      const { accessToken, refreshToken, role } = res.data;
+
       // save tokens
       tokenService.setTokens(
-        res.data.accessToken,
-        res.data.refreshToken
+        accessToken,
+        refreshToken
       );
 
       // decode token for user data to extract user info
       const decodedToken = jwtDecode(res.data.accessToken);
-      
+
       // update auth context with user data
       userLoginHandler({
         email: decodedToken.sub,
-        accessToken: res.data.accessToken,
-        refreshToken: res.data.refreshToken
+        accessToken,
+        refreshToken,
+        role
       });
 
-      // redirect to dashboard
-      navigate("/dashboard");
+      // redirect based on role
+      navigate(role === "ADMIN" ? "/admin" : "/dashboard", { replace: true });
 
     } catch (err) {
-      // error extraction
-      if (err.response?.status === 401) {
-        setError("Invalid email or password!!!");
-      } else {
-        setError("Something went wrong! Try again later");
-      }
+
+      // set error message based on response status
+      setError(err.response?.status === 401
+        ? "Invalid email or password!!!"
+        : "Something went wrong! Try again later");
     }
   };
 
@@ -121,7 +122,7 @@ export default function Login() {
             <div>
               <button
                 type="submit"
-                value= "Login"
+                value="Login"
                 disabled={isPending}
                 className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
               >

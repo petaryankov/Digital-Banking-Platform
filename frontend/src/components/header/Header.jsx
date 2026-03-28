@@ -5,7 +5,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 export default function Header() {
 
   // Access authentication data from context
-  const auth = useContext(AuthContext);
+  const { accessToken, role, email } = useContext(AuthContext);
 
   return (
     <header className="flex justify-between items-center px-8 py-4 bg-gray-900 text-white border-b border-gray-800">
@@ -18,8 +18,8 @@ export default function Header() {
       {/* Navigation section */}
       <nav className="flex items-center gap-6">
 
-        {/* If user is NOT logged in */}
-        {!auth.accessToken && (
+        {/* Guest navigation */}
+        {!accessToken && (
           <>
             <Link to="/login" className="text-gray-300 hover:text-white">
               Login
@@ -31,9 +31,15 @@ export default function Header() {
           </>
         )}
 
-        {/* If user IS logged in */}
-        {auth.accessToken && (
+        {/* Authenticated navigation */}
+        {accessToken && (
           <>
+          {/* Show admin link only if ADMIN role*/}
+          {role === "ADMIN" && (
+            <Link to="/admin" className="text-gray-300 hover:text-white">
+              Admin
+            </Link>
+          )}
           {/* Dashboard link */}
             <Link to="/dashboard" className="text-gray-300 hover:text-white">
               Dashboard
@@ -41,7 +47,7 @@ export default function Header() {
 
             {/* Display logged user email */}
             <span className="text-gray-300">
-              {auth.email}
+              {email}
             </span>
 
             {/* Logout link */}

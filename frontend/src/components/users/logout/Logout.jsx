@@ -1,8 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../../../contexts/AuthContext";
-import { tokenService } from "../../../services/tokenService";
-
 
 export default function Logout() {
 
@@ -15,14 +13,12 @@ export default function Logout() {
   // execute logout logic on component mount
   useEffect(() => {
 
-    // clear tokens from storage
-    tokenService.clearTokens();
-
     // update auth context to reflect logout
     userLogoutHandler();
 
     // redirect to home page after logout
-    navigate("/");
+    navigate("/", { replace: true });
+
   }, [navigate, userLogoutHandler]);
 
   return null;
