@@ -7,16 +7,20 @@ import com.yankov.backend.model.User;
 import com.yankov.backend.model.dto.request.AuthRequestDto;
 import com.yankov.backend.model.dto.request.RegisterRequestDto;
 import com.yankov.backend.model.dto.response.AuthResponseDto;
-import com.yankov.backend.security.JwtService;
-import com.yankov.backend.security.RefreshTokenService;
 import com.yankov.backend.service.AuthService;
+import com.yankov.backend.service.JwtService;
+import com.yankov.backend.service.RefreshTokenService;
 import com.yankov.backend.service.UserService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import static com.yankov.backend.constants.ExceptionMessages.INVALID_CREDENTIALS;
+import static com.yankov.backend.constants.ExceptionMessages.USER_IS_DEACTIVATED;
 import static com.yankov.backend.constants.JwtConstants.REFRESH_TOKEN_TYPE;
 
 @Service
@@ -31,18 +35,32 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponseDto login(AuthRequestDto request) {
 
-        // authenticate credentials
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(), request.getPassword()));
+        try {
+
+            // authenticate credentials
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(), request.getPassword()));
+
+        } catch (DisabledException ex) {
+            throw new RuntimeException(USER_IS_DEACTIVATED);
+        } catch (BadCredentialsException ex) {
+            throw new RuntimeException(INVALID_CREDENTIALS);
+        }
 
         User user = userService.getUserByEmail(request.getEmail());
 
-        // Generate tokens
-        String accessToken = jwtService.generateAccessToken(user.getEmail());
-        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
 
-        return new AuthResponseDto(accessToken, refreshToken);
+        // generate tokens
+        String accessToken = jwtService.generateAccessToken(
+                user.getEmail(), user.getRole().name());
+        String refreshToken = jwtService.generateRefreshToken(
+                user.getEmail(), user.getRole().name());
+
+        // persist refresh token
+        refreshTokenService.create(user, refreshToken);
+
+        return new AuthResponseDto(accessToken, refreshToken, user.getRole());
     }
 
     @Override
@@ -53,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
             throw new UserAlreadyExistsException(request.getEmail());
         }
 
-        // create USER
+        // create user
         User user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
@@ -62,16 +80,16 @@ public class AuthServiceImpl implements AuthService {
                 .active(true)
                 .build();
 
-        User saved = userService.createUser(user);
+        User savedUser = userService.createUser(user);
 
         // Generate tokens
-        String accessToken = jwtService.generateAccessToken(saved.getEmail());
-        String refreshToken = jwtService.generateRefreshToken(saved.getEmail());
+        String accessToken = jwtService.generateAccessToken(savedUser.getEmail(), savedUser.getRole().name());
+        String refreshToken = jwtService.generateRefreshToken(savedUser.getEmail(), savedUser.getRole().name());
 
-        // Persist refresh token
-        refreshTokenService.create(saved, refreshToken);
+        // persist refresh token
+        refreshTokenService.create(savedUser, refreshToken);
 
-        return new AuthResponseDto(accessToken, refreshToken);
+        return new AuthResponseDto(accessToken, refreshToken, user.getRole());
     }
 
     @Override
@@ -84,8 +102,15 @@ public class AuthServiceImpl implements AuthService {
                 REFRESH_TOKEN_TYPE
         );
 
-        String newAccessToken = jwtService.generateAccessToken(claims.getSubject());
+        // extract user email
+        String email = claims.getSubject();
 
-        return new AuthResponseDto(newAccessToken, refreshToken);
+        // find user role
+        Role userRole = userService.getUserByEmail(email).getRole();
+
+        // generate new access token
+        String newAccessToken = jwtService.generateAccessToken(email, userRole.name());
+
+        return new AuthResponseDto(newAccessToken, refreshToken, userRole);
     }
 }
