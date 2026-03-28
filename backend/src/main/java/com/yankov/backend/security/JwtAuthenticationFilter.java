@@ -1,6 +1,8 @@
 package com.yankov.backend.security;
 
 import com.yankov.backend.exception.InvalidJwtTokenException;
+import com.yankov.backend.service.JwtService;
+import com.yankov.backend.service.impl.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
