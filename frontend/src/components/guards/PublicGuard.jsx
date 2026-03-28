@@ -4,18 +4,14 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 export default function PublicGuard() {
 
-    const {accessToken, role} = useContext(AuthContext)
+    const { accessToken, role } = useContext(AuthContext)
 
     // if authenticated, redirect to dashboard or admin page based on role
     if (accessToken) {
-        if (role === "ADMIN") {
-            return <Navigate to="/admin" replace />;
-        } else {
-            return <Navigate to="/dashboard" replace />;
-        }
+        return <Navigate to={role === "ADMIN" ? "/admin" : "/dashboard"} replace />;
     }
 
     // if not authenticated, render the public component
     return <Outlet />;
-        
+
 }
