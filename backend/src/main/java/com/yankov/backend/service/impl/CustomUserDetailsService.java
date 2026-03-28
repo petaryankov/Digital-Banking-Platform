@@ -1,4 +1,4 @@
-package com.yankov.backend.security;
+package com.yankov.backend.service.impl;
 
 import com.yankov.backend.model.User;
 import com.yankov.backend.repository.UserRepository;
