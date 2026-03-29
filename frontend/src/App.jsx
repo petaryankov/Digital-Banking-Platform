@@ -14,8 +14,8 @@ import AuthGuard from './components/guards/AuthGuard';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminGuard from './components/guards/AdminGuard';
 import PublicGuard from './components/guards/PublicGuard';
-import Accounts from './components/accounts/Accounts';
 import DeactivateModal from './components/users/DeactivateModal';
+import AccountPage from './components/accounts/AccountPage';
 import './App.css';
 
 function App() {
@@ -109,7 +109,7 @@ function App() {
               <Route path="delete-user" element={<DeactivateModal />} />
             </Route>
 
-            <Route path="/accounts" element={<Accounts />} />
+            <Route path="/accounts" element={<AccountPage />} />
 
           </Route>
 
