@@ -14,7 +14,7 @@ public class AuthAccessTokenSecurityIT extends BaseSecurityIT {
 
 
     private final String ADMIN_DASHBOARD_URI = "/api/admin/dashboard";
-    private final String USER_ENDPOINT = "/api/accounts/user/1";
+    private final String USER_ENDPOINT = "/api/accounts/me";
 
     // Invalid token -> 401 Unauthorized
     @Test

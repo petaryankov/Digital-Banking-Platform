@@ -12,9 +12,9 @@ import com.yankov.backend.service.AccountService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // Disable security filters until JWT is implemented
 @WebMvcTest(AccountController.class)
-@AutoConfigureMockMvc(addFilters = false)
 class AccountControllerTest {
 
     @Autowired
@@ -53,12 +53,14 @@ class AccountControllerTest {
     private static final Long USER_ID = 1L;
     private static final Long ACCOUNT_ID = 10L;
     private static final String ACCOUNT_NUMBER = "ACC123456";
+    private static final String USER_EMAIL = "john.doe@test.com";
     private static final BigDecimal BALANCE_ZERO = BigDecimal.ZERO;
     private static final BigDecimal BALANCE_100 = BigDecimal.valueOf(100);
     private static final String CURRENCY_EURO = "EUR";
 
     // POST /api/accounts
     @Test
+    @WithMockUser(username = USER_EMAIL)
     void createAccount_shouldReturnCreatedAccount() throws Exception {
 
         // Arrange
@@ -69,6 +71,7 @@ class AccountControllerTest {
 
         User user = User.builder()
                 .id(USER_ID)
+                .email(USER_EMAIL)
                 .build();
 
         Account savedAccount = Account.builder()
@@ -80,11 +83,12 @@ class AccountControllerTest {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        when(accountService.createAccount(USER_ID, Currency.EUR))
+        when(accountService.createAccountByEmail(USER_EMAIL, Currency.EUR))
                 .thenReturn(savedAccount);
 
         // Act & Assert
         mockMvc.perform(post("/api/accounts")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -97,6 +101,7 @@ class AccountControllerTest {
 
     // GET /api/accounts/by-number
     @Test
+    @WithMockUser(username = USER_EMAIL)
     void getAccountByAccountNumber_shouldReturnAccount() throws Exception {
 
         // Arrange
@@ -127,13 +132,15 @@ class AccountControllerTest {
                 .andExpect(jsonPath("$.userId").value(USER_ID));
     }
 
-    // GET /api/accounts/user/{userId}
+    // GET /api/accounts/me
     @Test
-    void getAccountsByUser_shouldReturnAccountList() throws Exception {
+    @WithMockUser(username = USER_EMAIL)
+    void getAccountsByUserEmail_shouldReturnAccountList() throws Exception {
 
         // Arrange
         User user = User.builder()
                 .id(USER_ID)
+                .email(USER_EMAIL)
                 .build();
 
         Account account = Account.builder()
@@ -145,11 +152,11 @@ class AccountControllerTest {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        when(accountService.getAccountsByUserId(USER_ID))
+        when(accountService.getAccountsByEmail(user.getEmail()))
                 .thenReturn(List.of(account));
 
         // Act & Assert
-        mockMvc.perform(get("/api/accounts/user/{userId}", USER_ID))
+        mockMvc.perform(get("/api/accounts/me"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
                 .andExpect(jsonPath("$[0].id").value(ACCOUNT_ID))

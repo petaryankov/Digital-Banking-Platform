@@ -79,11 +79,11 @@ public class AccountServiceImplTest {
     @Test
     void shouldCreateAccountWithZeroBalance() {
 
-        when(userService.getUserById(USER_ID)).thenReturn(user);
+        when(userService.getUserByEmail(USER_EMAIL)).thenReturn(user);
         when(accountRepository.save(any(Account.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Account result = accountService.createAccount(USER_ID, Currency.EUR);
+        Account result = accountService.createAccountByEmail(user.getEmail(), Currency.EUR);
 
         assertThat(result.getUser()).isEqualTo(user);
         assertThat(result.getCurrency()).isEqualTo(Currency.EUR);
@@ -119,13 +119,13 @@ public class AccountServiceImplTest {
 
     // All accounts belonging to a user are returned
     @Test
-    void shouldReturnAccountsByUserId() {
+    void shouldReturnAccountsByUserEmail() {
 
-        when(userService.getUserById(USER_ID)).thenReturn(user);
+        when(userService.getUserByEmail(USER_EMAIL)).thenReturn(user);
         when(accountRepository.findByUser(user))
                 .thenReturn(List.of(account));
 
-        List<Account> result = accountService.getAccountsByUserId(USER_ID);
+        List<Account> result = accountService.getAccountsByEmail(user.getEmail());
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0)).isEqualTo(account);

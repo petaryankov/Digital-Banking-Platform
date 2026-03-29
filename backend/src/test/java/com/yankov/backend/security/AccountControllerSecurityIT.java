@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class AccountControllerSecurityIT extends BaseSecurityIT {
 
-    private final String URI = "/api/accounts/user/1";
+    private final String URI = "/api/accounts/me";
 
     @Test
     void shouldReturn401_whenNoAccessTokenProvided() throws Exception {
