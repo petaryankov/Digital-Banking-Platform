@@ -34,13 +34,19 @@ export default function Header() {
         {/* Authenticated navigation */}
         {accessToken && (
           <>
-          {/* Show admin link only if ADMIN role*/}
-          {role === "ADMIN" && (
-            <Link to="/admin" className="text-gray-300 hover:text-white">
-              Admin
-            </Link>
-          )}
-          {/* Dashboard link */}
+            {/* Show admin link only if ADMIN role*/}
+            {role === "ADMIN" && (
+              <Link to="/admin" className="text-gray-300 hover:text-white">
+                Admin
+              </Link>
+            )}
+
+            {/* Accounts link */}
+            <Link to="/accounts" className="text-gray-300 hover:text-white">
+              My Accounts
+            </Link> 
+
+            {/* Dashboard link */}
             <Link to="/dashboard" className="text-gray-300 hover:text-white">
               Dashboard
             </Link>
