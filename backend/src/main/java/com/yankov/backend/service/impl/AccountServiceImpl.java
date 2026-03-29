@@ -25,15 +25,15 @@ public class AccountServiceImpl implements AccountService {
 
     private final UserService userService;
 
-    private final BigDecimal AMOUNT_ZERO = BigDecimal.ZERO;
+    private static final BigDecimal AMOUNT_ZERO = BigDecimal.ZERO;
 
     // Create account
     @Transactional
     @Override
-    public Account createAccount(Long userId, Currency currency) {
+    public Account createAccountByEmail(String email, Currency currency) {
 
         Account account = Account.builder()
-                .user(userService.getUserById(userId))
+                .user(userService.getUserByEmail(email))
                 .currency(currency)
                 .balance(AMOUNT_ZERO) // always start at zero
                 .accountNumber(generateAccountNumber())
@@ -65,9 +65,9 @@ public class AccountServiceImpl implements AccountService {
     // Get accounts by the user
     @Transactional(readOnly = true)
     @Override
-    public List<Account> getAccountsByUserId(Long userId) {
+    public List<Account> getAccountsByEmail(String email) {
 
-        User user = userService.getUserById(userId);
+        User user = userService.getUserByEmail(email);
 
         return accountRepository.findByUser(user);
     }

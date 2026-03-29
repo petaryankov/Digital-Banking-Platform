@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface AccountService {
 
-    Account createAccount(Long userId, Currency currency);
+    Account createAccountByEmail(String email, Currency currency);
 
     Account getAccountByAccountNumber(String number);
 
-    List<Account> getAccountsByUserId(Long userId);
+    List<Account> getAccountsByEmail(String email);
 
     void deposit(Account account, BigDecimal amount);
 
