@@ -9,7 +9,6 @@ import lombok.Data;
 @Builder
 public class AccountCreateRequestDto {
 
-    @NotNull(message = "User id is required")
     private Long userId;
 
     @NotNull(message = "Currency is required")
