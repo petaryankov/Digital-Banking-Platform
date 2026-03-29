@@ -12,9 +12,11 @@ import Register from './components/register/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import AuthGuard from './components/guards/AuthGuard';
 import AdminDashboard from './components/admin/AdminDashboard';
-import './App.css';
 import AdminGuard from './components/guards/AdminGuard';
 import PublicGuard from './components/guards/PublicGuard';
+import Accounts from './components/accounts/Accounts';
+import DeactivateModal from './components/users/DeactivateModal';
+import './App.css';
 
 function App() {
 
@@ -100,9 +102,17 @@ function App() {
 
           {/* Protected routes */}
           <Route element={<AuthGuard />}>
+
             <Route path="/logout" element={<Logout />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+
+            <Route path="/dashboard" element={<Dashboard />}>
+              <Route path="delete-user" element={<DeactivateModal />} />
+            </Route>
+
+            <Route path="/accounts" element={<Accounts />} />
+
           </Route>
+
           {/* Admin-only routes */}
           <Route element={<AdminGuard />}>
             <Route path="/admin" element={<AdminDashboard />} />
