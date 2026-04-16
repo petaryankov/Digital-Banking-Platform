@@ -21,12 +21,19 @@ export default function Home() {
           </p>
 
           {/* Show "Get Started" button only if user is NOT logged in */}
-          {!accessToken && (
+          {!accessToken ? (
             <Link
               to="/login"
               className="bg-indigo-500 hover:bg-indigo-400 px-6 py-3 rounded-md font-semibold"
             >
               Get Started
+            </Link>
+          ) : (
+            <Link
+              to="/dashboard"
+              className="bg-indigo-500 hover:bg-indigo-400 px-6 py-3 rounded-md font-semibold"
+            >
+              View My Dashboard
             </Link>
           )}
         </div>
