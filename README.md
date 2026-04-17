@@ -16,12 +16,27 @@ The system provides secure authentication using **JWT access & refresh tokens**,
 - Token expiration & revocation
 - Role-based access control (USER / ADMIN)
 - Stateless REST API
+- Protected frontend routes (guards)
 
 ### 🏦 Banking Capabilities
-- Account management
-- Secure money transfers
-- Ownership validation
+- Account creation (multi-currency: EUR, USD)
+- Deposit / Withdraw operations
+- Secure transfers between accounts
+- Ownership validation(JWT-based)
 - Transaction history
+
+### 🖥 Frontend Features (React)
+- Modern dashboard UI (TailwindCSS)
+- Authentication context (global state)
+- Route guards:
+  - AuthGuard
+  - AdminGuard
+  - PublicGuard
+- Account management UI
+- Deposit / Withdraw modals
+- Admin dashboard:
+  - Activate / deactivate users
+- Real-time UI updates after transactions
 
 ### 🧪 Testing & Quality
 - Integration security tests with MockMvc
@@ -41,16 +56,28 @@ The system provides secure authentication using **JWT access & refresh tokens**,
 - Spring Data JPA / Hibernate
 - MySQL
 
+### Frontend
+- React 19
+- React Router
+- Context API
+- Axios
+- TailwindCSS
 ### Testing
 - JUnit 5
 - MockMvc
 - SQL scripts
 
-### Planned
-- React frontend
-- Docker / Compose
-- CI/CD
+### 🏗 Architecture Overview
 
+Frontend (React)
+   ↓
+REST API (Spring Boot)
+   ↓
+Service Layer (Business Logic)
+   ↓
+Repository Layer (JPA)
+   ↓
+MySQL Database
 ---
 
 ## 🚀 Getting Started
