@@ -69,15 +69,17 @@ The system provides secure authentication using **JWT access & refresh tokens**,
 
 ### 🏗 Architecture Overview
 
-Frontend (React)
-   ↓
-REST API (Spring Boot)
-   ↓
+```text
+Client (React Frontend)
+          ↓
+REST API (Spring Boot Controllers)
+          ↓
 Service Layer (Business Logic)
-   ↓
-Repository Layer (JPA)
-   ↓
-MySQL Database
+          ↓
+Repository Layer (JPA / Hibernate)
+          ↓
+    MySQL Database
+
 ---
 
 ## 🚀 Getting Started
@@ -276,7 +278,3 @@ Petar Yankov
 https://github.com/petaryankov
 
 ---
-
-## 🚀 Next Phase
-
-Frontend application (React) & containerization.
