@@ -1,46 +1,33 @@
-import axios from "axios";
-import { tokenService } from "../services/tokenService";
+import { clientApi } from "./clientApi";
 
-const API_BASE_URL = "http://localhost:8080/api/transactions";
-
-// Helper to get headers with the latest token
-const getAuthHeaders = () => ({
-    headers: {
-        Authorization: `Bearer ${tokenService.getAccessToken()}`
-    }
-});
 
 const transactionApi = {
 
     // POST /api/transactions/deposit
     deposit(accountNumber, amount) {
-        return axios.post(`${API_BASE_URL}/deposit`, 
-            { accountNumber, amount }, 
-            getAuthHeaders()
-        );
+        return clientApi.post("/transactions/deposit",
+            { accountNumber, amount });
     },
 
     // POST /api/transactions/withdraw
     withdraw(accountNumber, amount) {
-        return axios.post(`${API_BASE_URL}/withdraw`, 
-            { accountNumber, amount }, 
-            getAuthHeaders()
-        );
+        return clientApi.post("/transactions/withdraw",
+            { accountNumber, amount });
     },
 
     // POST /api/transactions/transfer
     transfer(sourceAccountNumber, targetAccountNumber, amount) {
-        return axios.post(`${API_BASE_URL}/transfer`, 
-            { sourceAccountNumber, targetAccountNumber, amount }, 
-            getAuthHeaders()
-        );
+        return clientApi.post("/transactions/transfer", {
+            sourceAccountNumber,
+            targetAccountNumber,
+            amount
+        });
     },
 
     // GET /api/transactions/target?accountNumber=...
     getTargetTransactions(accountNumber) {
-        return axios.get(`${API_BASE_URL}/target`, {
-            params: { accountNumber },
-            ...getAuthHeaders()
+        return clientApi.get("/transactions/target", {
+            params: { accountNumber }
         });
     }
 

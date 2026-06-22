@@ -1,5 +1,4 @@
-import axios from "axios";
-import { tokenService } from "../services/tokenService";
+import { clientApi } from "./clientApi";
 
 
 const API_BASE_URL = "http://localhost:8080/api/users";
@@ -8,13 +7,7 @@ const userApi = {
 
     // delete user user
     deleteUser() {
-        const accessToken = tokenService.getAccessToken();
-
-        return axios.delete(`${API_BASE_URL}/me`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        });
+        return clientApi.delete("/users/me");
     }
 };
 

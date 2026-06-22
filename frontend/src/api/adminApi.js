@@ -1,34 +1,20 @@
 
-import axios from "axios";
-import { tokenService } from "../services/tokenService";
+import { clientApi } from "./clientApi";
 
-const API_BASE_URL = "http://localhost:8080/api/users";
 
 const adminApi = {
 
-    // get all users
+    // get all users http://localhost:8080/api/users
     getAllUsers() {
-        return axios.get(API_BASE_URL, {
-            headers: {
-                Authorization: `Bearer ${tokenService.getAccessToken()}`
-            }
-        });
+        return clientApi.get("/users");
     },
-    // activate user
+    // activate user PUT http://localhost:8080/api/users/{userId}/activate
     activateUser(userId) {
-        return axios.put(`${API_BASE_URL}/${userId}/activate`, {}, {
-            headers: {
-                Authorization: `Bearer ${tokenService.getAccessToken()}`
-            }
-        });
+        return clientApi.put(`/users/${userId}/activate`);
     },
-    // deactivate user(admin only)
+    // deactivate user(admin only) PUT http://localhost:8080/api/users/{userId}/deactivate
     deactivateUser(userId) {
-        return axios.put(`${API_BASE_URL}/${userId}/deactivate`, {}, {
-            headers: {
-                Authorization: `Bearer ${tokenService.getAccessToken()}`
-            }
-        });
+        return clientApi.put(`/users/${userId}/deactivate`);
     }
 };
 

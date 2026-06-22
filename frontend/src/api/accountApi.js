@@ -1,5 +1,4 @@
-import axios from "axios";
-import { tokenService } from "../services/tokenService";
+import { clientApi } from "./clientApi";
 
 
 const API_BASE_URL = "http://localhost:8080/api/accounts";
@@ -7,19 +6,11 @@ const API_BASE_URL = "http://localhost:8080/api/accounts";
 const accountApi = {
 
     getUserAccounts() {
-        return axios.get(`${API_BASE_URL}/me`, {
-            headers: {
-                Authorization: `Bearer ${tokenService.getAccessToken()}`
-            }
-        });
+        return clientApi.get("/accounts/me");
     },
 
     createAccount(currency) {
-        return axios.post(API_BASE_URL, { currency }, {
-            headers: {
-                Authorization: `Bearer ${tokenService.getAccessToken()}`
-            }
-        });
+        return clientApi.post("/accounts", { currency });
     }
 
 };
