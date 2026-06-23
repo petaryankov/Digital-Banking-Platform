@@ -15,6 +15,11 @@ const authApi = {
     // register request
     register(data) {
         return axios.post(`${API_BASE_URL}/register`, data);
+    },
+
+    // logout request
+    logout(refreshToken) {
+        return axios.post(`${API_BASE_URL}/logout`, { refreshToken });
     }
 
 };

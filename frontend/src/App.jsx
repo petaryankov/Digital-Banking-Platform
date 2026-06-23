@@ -1,9 +1,11 @@
 import { Routes, Route } from 'react-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
+import { setupInterceptors } from './api/clientApi';
 import { AuthContext } from './contexts/AuthContext';
 import { tokenService } from './services/tokenService';
+import authApi from './api/authApi';
 import Home from './components/home/Home';
 import Header from './components/header/Header';
 import Login from './components/users/login/Login';
@@ -18,15 +20,17 @@ import DeactivateModal from './components/users/DeactivateModal';
 import AccountPage from './components/accounts/AccountPage';
 import './App.css';
 
-function App() {
-
-  // empty auth state template
+ // empty auth state template
   const EMPTY_AUTH_STATE = {
     email: "",
     role: "",
     accessToken: "",
     refreshToken: ""
   };
+
+function App() {
+
+ 
 
   // lazy initializer restores auth state from local storage on app loads
   const [authData, setAuthData] = useState(() => {
@@ -60,6 +64,27 @@ function App() {
     }
   });
 
+  // Connect your clientApi Interceptors to this state layer on mount
+  useEffect(() => {
+    setupInterceptors(
+      // OnRefreshSuccess callback: Syncs state when interceptor fetches a fresh JWT behind the scenes
+      (newData) => {
+        setAuthData({
+          email: newData.email,
+          role: newData.role,
+          accessToken: newData.accessToken,
+          refreshToken: newData.refreshToken
+        });
+      },
+      // clears state if the refresh token in the backend database expires/fails
+      () => {
+        tokenService.clearTokens();
+        setAuthData(EMPTY_AUTH_STATE);
+        window.location.href = "/login?session=expired";
+      }
+    );
+  }, []);
+
   // handler executed on successful login
   const userLoginHandler = (data) => {
 
@@ -76,8 +101,19 @@ function App() {
   };
 
   // Handler executed on logout
-  const userLogoutHandler = () => {
+  const userLogoutHandler = async () => {
 
+    // fetch the active refresh token directly from your current React state
+    const currentRefreshToken = authData.refreshToken;
+
+    if (currentRefreshToken) {
+      try {
+        // call your unintercepted authApi to drop the token row in the backend SQL/NoSQL DB
+        await authApi.logout(currentRefreshToken);
+      } catch (error) {
+        console.error("Database session revocation failed:", error);
+      }
+    }
     // Clear tokens from storage and reset auth state
     tokenService.clearTokens();
 
