@@ -18,6 +18,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.yankov.backend.constants.ExceptionMessages.INVALID_CREDENTIALS;
 import static com.yankov.backend.constants.ExceptionMessages.USER_IS_DEACTIVATED;
@@ -64,6 +65,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
+    public void logout(String refreshToken) {
+        // delete the token in db
+        refreshTokenService.deleteByRefreshToken(refreshToken);
+    }
+
+    @Override
+    @Transactional
     public AuthResponseDto register(RegisterRequestDto request) {
 
         // prevent duplicate email
