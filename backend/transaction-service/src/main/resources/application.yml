@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: auth-service
+    name: transaction-service
   datasource:
     url: jdbc:mysql://localhost:3306/db_transaction?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: ${DB_USERNAME}
