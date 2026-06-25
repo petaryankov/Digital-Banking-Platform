@@ -1,8 +1,8 @@
-package com.yankov.backend.repository;
+package com.yankov.auth.repository;
 
-import com.yankov.backend.model.User;
-import lombok.NonNull;
+import com.yankov.auth.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import lombok.NonNull;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,7 @@
-package com.yankov.backend.repository;
+package com.yankov.auth.repository;
 
-import com.yankov.backend.model.RefreshToken;
+
+import com.yankov.auth.model.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Transactional;
