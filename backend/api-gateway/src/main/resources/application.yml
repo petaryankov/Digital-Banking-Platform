@@ -1,0 +1,42 @@
+server:
+  port: 8000 # the single point of contact for the frontend
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      # central Cross-Origin Resource Sharing (CORS) rules for the frontend
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - Authorization
+              - Content-Type
+              - Cache-Control
+            allowCredentials: true
+
+      # path-based routing rules to direct frontend requests automatically
+      routes:
+        - id: auth-service-route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/auth/**, /api/users/**
+
+        - id: account-service-route
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/accounts/**
+
+        - id: transaction-service-route
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/transactions/**

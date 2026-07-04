@@ -20,7 +20,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2024.0.0</version> <!-- Compatible with modern Spring Boot 3.x releases -->
+                <version>2025.0.3</version> <!-- Compatible with modern Spring Boot 3.x releases -->
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -28,18 +28,24 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- 2. The Core Spring Cloud Gateway Engine -->
+        <!-- added core reactive runtime framework engine -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
-        <!-- Lombok (Optional) -->
+        <!-- The Core Spring Cloud Gateway Engine -->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-gateway-server-webflux</artifactId>
         </dependency>
+
+        <!-- loadBalancer requirements -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
