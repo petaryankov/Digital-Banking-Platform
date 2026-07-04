@@ -1,5 +1,6 @@
 package com.yankov.account.controller;
 
+import com.yankov.account.exception.CurrencyMismatchException;
 import com.yankov.account.model.Account;
 import com.yankov.account.model.dto.request.AccountCreateRequestDto;
 import com.yankov.account.model.dto.response.AccountResponseDto;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -61,6 +63,40 @@ public class AccountController {
                 .toList();
 
         return ResponseEntity.ok(response);
+    }
+
+    // inbound route for transaction-service to execute an internal deposit
+    @PostMapping("/internal/deposit")
+    public ResponseEntity<Void> internalDeposit(
+            @RequestParam String accountNumber,
+            @RequestParam BigDecimal amount) {
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        accountService.deposit(account, amount);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // inbound route for transaction-service to execute an internal withdraw
+    @PostMapping("/internal/withdraw")
+    public ResponseEntity<Void> internalWithdraw(@RequestParam String accountNumber,
+                                                 @RequestParam BigDecimal amount) {
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        accountService.withdraw(account, amount);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // inbound route for transaction-service to verify currency match
+    @PostMapping("/internal/check-currency-match")
+    public ResponseEntity<Void> internalCheckCurrencyMatch(
+            @RequestParam String sourceAccountNumber,
+            @RequestParam String targetAccountNumber) {
+        Account sourceAccount = accountService.getAccountByAccountNumber(sourceAccountNumber);
+        Account targetAccount = accountService.getAccountByAccountNumber(targetAccountNumber);
+
+        accountService.verifyCurrencyMatch(sourceAccountNumber, targetAccountNumber);
+
+        return ResponseEntity.ok().build();
     }
 
     // private mapper

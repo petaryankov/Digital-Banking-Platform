@@ -1,8 +1,8 @@
-package com.yankov.account.config;
+package com.yankov.transaction.config;
 
-import com.yankov.account.security.JwtAccessDeniedHandler;
-import com.yankov.account.security.JwtAuthenticationEntryPoint;
-import com.yankov.account.security.JwtAuthenticationFilter;
+import com.yankov.transaction.security.JwtAccessDeniedHandler;
+import com.yankov.transaction.security.JwtAuthenticationEntryPoint;
+import com.yankov.transaction.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    // main security filter chain configuration for JWT-based authentication
+    // Main security filter chain configuration for JWT-based authentication
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -35,10 +35,8 @@ public class SecurityConfig {
                         exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                                 .accessDeniedHandler(jwtAccessDeniedHandler))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/accounts/internal/**")
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated())
+                        auth.anyRequest().authenticated()
+                )
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class);
 

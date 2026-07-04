@@ -3,6 +3,7 @@ package com.yankov.account.service.impl;
 import com.yankov.account.client.UserClient;
 import com.yankov.account.enums.Currency;
 import com.yankov.account.exception.AccountNotFoundException;
+import com.yankov.account.exception.CurrencyMismatchException;
 import com.yankov.account.exception.InsufficientBalanceException;
 import com.yankov.account.exception.InvalidTransactionException;
 import com.yankov.account.model.Account;
@@ -107,5 +108,18 @@ public class AccountServiceImpl implements AccountService {
         account.setBalance(account.getBalance().subtract(amount));
 
         accountRepository.save(account);
+    }
+
+    @Transactional
+    @Override
+    public void verifyCurrencyMatch(String sourceAccountNumber, String targetAccountNumber) {
+        Account source = accountRepository.findByAccountNumber(sourceAccountNumber)
+                .orElseThrow(() ->new AccountNotFoundException(sourceAccountNumber));
+        Account target = accountRepository.findByAccountNumber(targetAccountNumber)
+                .orElseThrow(() ->new AccountNotFoundException(targetAccountNumber));
+        if (source.getCurrency() != target.getCurrency()) {
+            throw new CurrencyMismatchException(source.getCurrency().name(),
+                    target.getCurrency().name());
+        }
     }
 }
