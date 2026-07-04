@@ -1,0 +1,36 @@
+package com.yankov.account.security;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+import static com.yankov.account.constants.ExceptionMessages.UNAUTHORIZED;
+
+//handles when JWT is missing, invalid, or expired (HTTP 401)
+@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private final SecurityErrorResponseWriter securityErrorResponseWriter;
+
+    @Override
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
+                         AuthenticationException authException)
+            throws IOException {
+
+        securityErrorResponseWriter.write(
+                request,
+                response,
+                HttpStatus.UNAUTHORIZED,
+                UNAUTHORIZED
+        );
+    }
+
+}
